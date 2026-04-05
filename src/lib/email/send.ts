@@ -1,6 +1,5 @@
 import { Resend } from "resend";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
 const FROM = "Sentavita <noreply@sentavita.com>";
 const ADMINS = ["fstraehuber@sentavita.com", "lmanning@sentavita.com"];
 
@@ -13,11 +12,13 @@ export async function sendEmail({
   subject: string;
   react: React.ReactElement;
 }) {
-  if (!process.env.RESEND_API_KEY || process.env.RESEND_API_KEY === "your-resend-key-here") {
+  const key = process.env.RESEND_API_KEY;
+  if (!key || key === "your-resend-key-here") {
     console.log(`[Email skipped] To: ${to}, Subject: ${subject}`);
     return;
   }
 
+  const resend = new Resend(key);
   await resend.emails.send({
     from: FROM,
     to: Array.isArray(to) ? to : [to],
