@@ -1,7 +1,7 @@
 import { Resend } from "resend";
 
 const FROM = "Sentavita <noreply@sentavita.com>";
-const ADMINS = ["fstraehuber@sentavita.com", "lmanning@sentavita.com"];
+const ADMINS = ["ferdinand.straehuber@gmail.com", "fstraehuber@sentavita.com", "lmanning@sentavita.com"];
 
 export async function sendEmail({
   to,
