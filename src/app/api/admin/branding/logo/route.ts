@@ -30,7 +30,7 @@ export async function POST(request: Request) {
 
   // Delete old logo if exists
   const { data: oldContent } = await supabase
-    .from("content")
+    .from("site_content")
     .select("content")
     .eq("page_key", "branding")
     .single();
@@ -54,7 +54,7 @@ export async function POST(request: Request) {
 
   // Update branding content
   const { data: existing } = await supabase
-    .from("content")
+    .from("site_content")
     .select("content")
     .eq("page_key", "branding")
     .single();
@@ -65,7 +65,7 @@ export async function POST(request: Request) {
   };
 
   const { error: dbErr } = await supabase
-    .from("content")
+    .from("site_content")
     .upsert({ page_key: "branding", content: newContent }, { onConflict: "page_key" });
 
   if (dbErr) {
@@ -82,7 +82,7 @@ export async function DELETE() {
 
   // Get current logo path
   const { data: content } = await supabase
-    .from("content")
+    .from("site_content")
     .select("content")
     .eq("page_key", "branding")
     .single();
@@ -103,7 +103,7 @@ export async function DELETE() {
   };
 
   await supabase
-    .from("content")
+    .from("site_content")
     .upsert({ page_key: "branding", content: newContent }, { onConflict: "page_key" });
 
   return NextResponse.json({ success: true });
