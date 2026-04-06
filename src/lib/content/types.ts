@@ -2,6 +2,9 @@ export interface SplashContent {
   wordmark: string;
   tagline: string;
   duration: number;
+  video_url: string;
+  music_url: string;
+  music_volume: number;
 }
 
 export interface HeroContent {

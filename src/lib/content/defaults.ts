@@ -6,6 +6,9 @@ export const defaults: ContentMap = {
     wordmark: "Sentavita",
     tagline: "Equine Health Technology",
     duration: 5000,
+    video_url: "",
+    music_url: "",
+    music_volume: 0.5,
   },
   landing: {
     hero: {

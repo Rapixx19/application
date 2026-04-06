@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { LogoUploader } from "../logo-uploader";
+import { MediaUploader } from "../media-uploader";
 
 interface ContentFormProps {
   pageKey: string;
@@ -62,6 +63,24 @@ export function ContentForm({ pageKey }: ContentFormProps) {
             }}
           />
         )}
+        {pageKey === "splash" && (
+          <>
+            <MediaUploader
+              type="video"
+              currentUrl={(content as { video_url?: string }).video_url || ""}
+              onUrlChange={(newUrl) => {
+                setContent((prev) => ({ ...prev, video_url: newUrl }));
+              }}
+            />
+            <MediaUploader
+              type="music"
+              currentUrl={(content as { music_url?: string }).music_url || ""}
+              onUrlChange={(newUrl) => {
+                setContent((prev) => ({ ...prev, music_url: newUrl }));
+              }}
+            />
+          </>
+        )}
         {renderFields(content, [], (path, value) => {
           setContent((prev) => {
             const next = JSON.parse(JSON.stringify(prev));
@@ -97,6 +116,10 @@ function renderFields(
   return Object.entries(obj).map(([key, value]) => {
     // Skip logo_path for branding page - it's handled by LogoUploader
     if (pageKey === "branding" && key === "logo_path") {
+      return null;
+    }
+    // Skip video_url and music_url for splash page - handled by MediaUploader
+    if (pageKey === "splash" && (key === "video_url" || key === "music_url")) {
       return null;
     }
 

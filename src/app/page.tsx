@@ -22,6 +22,9 @@ export default async function Home() {
         tagline={splash.tagline}
         duration={splash.duration}
         logoPath={branding.logo_path}
+        videoUrl={splash.video_url}
+        musicUrl={splash.music_url}
+        musicVolume={splash.music_volume}
       />
 
       <div className="flex flex-col min-h-screen bg-background">
