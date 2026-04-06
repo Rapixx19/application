@@ -60,9 +60,8 @@ export const defaults: ContentMap = {
     steps: [
       { title: "Let\u2019s start with the basics", description: "Who are you?" },
       { title: "Where are you based?", description: "This helps us understand your timezone and context." },
-      { title: "Your background", description: "Tell us about your experience and what role interests you." },
-      { title: "A few more details", description: "Based on your selected role, we\u2019d like to know a bit more." },
-      { title: "Almost there", description: "Share your work and tell us why this project matters to you." },
+      { title: "Your background", description: "Tell us about your experience, what role interests you, and answer a few questions based on your selection." },
+      { title: "Almost there", description: "Share your work, tell us why this project matters to you, and optionally upload your CV." },
     ],
     countries: ["Switzerland", "Germany", "United Kingdom", "Spain", "France", "Italy", "Netherlands", "Austria", "Other"],
     backgrounds: ["Student", "Recent graduate", "Working professional", "Academic", "Freelance"],

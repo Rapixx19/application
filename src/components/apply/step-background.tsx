@@ -1,11 +1,15 @@
+import type { RoleQuestion } from "@/lib/content/types";
+
 interface StepBackgroundProps {
-  data: { background: string; roles: string[] };
+  data: { background: string; roles: string[]; role_details: Record<string, Record<string, string>> };
   backgrounds: string[];
   roleOptions: string[];
+  roleQuestions: Record<string, RoleQuestion[]>;
   onChange: (field: string, value: string | string[]) => void;
+  onRoleDetailChange: (role: string, field: string, value: string) => void;
 }
 
-export function StepBackground({ data, backgrounds, roleOptions, onChange }: StepBackgroundProps) {
+export function StepBackground({ data, backgrounds, roleOptions, roleQuestions, onChange, onRoleDetailChange }: StepBackgroundProps) {
   const toggleRole = (role: string) => {
     const current = data.roles;
     const next = current.includes(role)
@@ -56,6 +60,47 @@ export function StepBackground({ data, backgrounds, roleOptions, onChange }: Ste
           })}
         </div>
       </div>
+
+      {/* Dynamic role questions */}
+      {data.roles.map((role) => {
+        const questions = roleQuestions[role];
+        if (!questions) return null;
+        const roleData = data.role_details[role] || {};
+
+        return (
+          <fieldset key={role} className="border border-border rounded-[10px] p-4 mt-6">
+            <legend className="text-xs text-muted uppercase tracking-wide px-2">
+              {role}
+            </legend>
+            <div className="space-y-4">
+              {questions.map((q) => (
+                <div key={q.label}>
+                  <label className="block text-sm font-medium text-primary mb-1.5">
+                    {q.label} <span className="text-accent">*</span>
+                  </label>
+                  {q.type === "textarea" ? (
+                    <textarea
+                      value={roleData[q.label] || ""}
+                      onChange={(e) => onRoleDetailChange(role, q.label, e.target.value)}
+                      placeholder={q.placeholder}
+                      rows={4}
+                      className="w-full p-3.5 border border-border rounded-[10px] text-[0.95rem] focus:border-primary focus:ring-2 focus:ring-primary/10 outline-none transition-colors resize-none"
+                    />
+                  ) : (
+                    <input
+                      type="text"
+                      value={roleData[q.label] || ""}
+                      onChange={(e) => onRoleDetailChange(role, q.label, e.target.value)}
+                      placeholder={q.placeholder}
+                      className="w-full p-3.5 border border-border rounded-[10px] text-[0.95rem] focus:border-primary focus:ring-2 focus:ring-primary/10 outline-none transition-colors"
+                    />
+                  )}
+                </div>
+              ))}
+            </div>
+          </fieldset>
+        );
+      })}
     </div>
   );
 }

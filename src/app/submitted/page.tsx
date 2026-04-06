@@ -3,6 +3,7 @@ import { Nav } from "@/components/landing/nav";
 
 export default async function SubmittedPage() {
   const content = await getContent("submitted");
+  const branding = await getContent("branding");
 
   const steps = content.next_steps.map((text) => {
     const dash = text.indexOf("\u2014");
@@ -12,7 +13,7 @@ export default async function SubmittedPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <Nav />
+      <Nav logoPath={branding.logo_path} />
       <main className="w-full max-w-[520px] mx-auto px-6 pb-16 text-center">
         {/* Check icon */}
         <div className="mx-auto w-16 h-16 rounded-full bg-green/10 border-2 border-green flex items-center justify-center mb-8">

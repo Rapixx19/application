@@ -12,6 +12,7 @@ import Link from "next/link";
 export default async function Home() {
   const splash = await getContent("splash");
   const landing = await getContent("landing");
+  const branding = await getContent("branding");
   const { sections, commitment } = landing;
 
   return (
@@ -20,10 +21,11 @@ export default async function Home() {
         wordmark={splash.wordmark}
         tagline={splash.tagline}
         duration={splash.duration}
+        logoPath={branding.logo_path}
       />
 
       <div className="flex flex-col min-h-screen bg-background">
-        <Nav />
+        <Nav logoPath={branding.logo_path} />
 
         <main className="flex-1 w-full max-w-[720px] mx-auto px-6 pb-16">
           <Hero hero={landing.hero} />

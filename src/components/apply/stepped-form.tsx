@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import type { ApplyContent } from "@/lib/content/types";
 import { trackEvent } from "@/lib/analytics";
@@ -8,7 +8,6 @@ import { ProgressBar } from "./progress-bar";
 import { StepBasics } from "./step-basics";
 import { StepLocation } from "./step-location";
 import { StepBackground } from "./step-background";
-import { StepRoleDetails } from "./step-role-details";
 import { StepMotivation } from "./step-motivation";
 
 const KEY = "sentavita_apply";
@@ -19,8 +18,10 @@ export function SteppedForm({ content }: { content: ApplyContent }) {
   const router = useRouter();
   const [step, setStep] = useState(1);
   const [data, setData] = useState<FD>(empty);
+  const [cvFile, setCvFile] = useState<File | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const cvInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const saved = sessionStorage.getItem(KEY);
@@ -47,15 +48,16 @@ export function SteppedForm({ content }: { content: ApplyContent }) {
   const canContinue = () => {
     if (step === 1) return data.full_name.trim() && data.email.includes("@");
     if (step === 2) return data.country && data.institution.trim();
-    if (step === 3) return data.background && data.roles.length > 0;
-    if (step === 4) {
+    if (step === 3) {
+      // Background, at least one role, and all role questions filled
+      if (!data.background || data.roles.length === 0) return false;
       return data.roles.every((role) => {
         const qs = content.role_questions[role] || [];
         const rd = data.role_details[role] || {};
         return qs.every((q) => (rd[q.label] || "").trim());
       });
     }
-    if (step === 5) return data.motivation.trim();
+    if (step === 4) return data.motivation.trim();
     return false;
   };
 
@@ -63,10 +65,15 @@ export function SteppedForm({ content }: { content: ApplyContent }) {
     setSubmitting(true);
     setError("");
     try {
+      const formData = new FormData();
+      formData.append("data", JSON.stringify(data));
+      if (cvFile) {
+        formData.append("cv", cvFile);
+      }
+
       const res = await fetch("/api/apply", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+        body: formData,
       });
       if (!res.ok) {
         const body = await res.json();
@@ -84,14 +91,14 @@ export function SteppedForm({ content }: { content: ApplyContent }) {
   };
 
   const stepInfo = content.steps[step - 1];
-  const isLast = step === 5;
+  const isLast = step === 4;
 
   return (
     <div>
-      <ProgressBar currentStep={step} totalSteps={5} />
+      <ProgressBar currentStep={step} totalSteps={4} />
 
       <div className="text-[0.7rem] uppercase tracking-[0.15em] text-muted mb-2">
-        Step {step} of 5
+        Step {step} of 4
       </div>
       <h2 className="font-serif text-2xl sm:text-3xl font-semibold text-primary mb-1">
         {stepInfo.title}
@@ -101,9 +108,25 @@ export function SteppedForm({ content }: { content: ApplyContent }) {
       <div key={step} className="animate-[slideIn_0.4s_ease]">
         {step === 1 && <StepBasics data={data} onChange={set} />}
         {step === 2 && <StepLocation data={data} countries={content.countries} onChange={set} />}
-        {step === 3 && <StepBackground data={data} backgrounds={content.backgrounds} roleOptions={content.role_options} onChange={set} />}
-        {step === 4 && <StepRoleDetails selectedRoles={data.roles} roleQuestions={content.role_questions} data={data.role_details} onChange={setRoleDetail} />}
-        {step === 5 && <StepMotivation data={data} onChange={set} />}
+        {step === 3 && (
+          <StepBackground
+            data={data}
+            backgrounds={content.backgrounds}
+            roleOptions={content.role_options}
+            roleQuestions={content.role_questions}
+            onChange={set}
+            onRoleDetailChange={setRoleDetail}
+          />
+        )}
+        {step === 4 && (
+          <StepMotivation
+            data={data}
+            onChange={set}
+            cvFile={cvFile}
+            onCvChange={setCvFile}
+            cvInputRef={cvInputRef}
+          />
+        )}
       </div>
 
       {error && (

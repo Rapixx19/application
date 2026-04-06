@@ -1,14 +1,16 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import Image from "next/image";
 
 interface SplashOverlayProps {
   wordmark: string;
   tagline: string;
   duration: number;
+  logoPath?: string;
 }
 
-export function SplashOverlay({ wordmark, tagline, duration }: SplashOverlayProps) {
+export function SplashOverlay({ wordmark, tagline, duration, logoPath }: SplashOverlayProps) {
   const [visible, setVisible] = useState(true);
   const [fading, setFading] = useState(false);
 
@@ -45,10 +47,22 @@ export function SplashOverlay({ wordmark, tagline, duration }: SplashOverlayProp
         }}
       />
 
-      {/* Wordmark */}
-      <div className="font-serif text-4xl sm:text-6xl font-bold text-white tracking-[0.15em] uppercase animate-fade-up-delay-1">
-        {wordmark}
-      </div>
+      {/* Logo or Wordmark */}
+      {logoPath ? (
+        <div className="relative w-32 h-32 sm:w-48 sm:h-48 animate-fade-up-delay-1">
+          <Image
+            src={logoPath}
+            alt={wordmark}
+            fill
+            className="object-contain"
+            priority
+          />
+        </div>
+      ) : (
+        <div className="font-serif text-4xl sm:text-6xl font-bold text-white tracking-[0.15em] uppercase animate-fade-up-delay-1">
+          {wordmark}
+        </div>
+      )}
 
       {/* Tagline */}
       <div className="text-white/40 text-xs sm:text-sm tracking-[0.3em] uppercase mt-4 animate-fade-up-delay-2">

@@ -34,6 +34,7 @@ export default async function WelcomePage({ params }: Props) {
   }
 
   const content = await getContent("welcome");
+  const branding = await getContent("branding");
 
   // Fetch files with signed URLs
   const res = await fetch(
@@ -44,7 +45,7 @@ export default async function WelcomePage({ params }: Props) {
 
   return (
     <div className="min-h-screen bg-background">
-      <Nav />
+      <Nav logoPath={branding.logo_path} />
       <main className="w-full max-w-[520px] mx-auto px-6 pb-16">
         <div className="text-xs font-medium tracking-[0.15em] uppercase text-green mb-4">
           {content.eyebrow}

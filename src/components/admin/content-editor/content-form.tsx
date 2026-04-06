@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { LogoUploader } from "../logo-uploader";
 
 interface ContentFormProps {
   pageKey: string;
@@ -53,6 +54,14 @@ export function ContentForm({ pageKey }: ContentFormProps) {
   return (
     <div>
       <div className="bg-card border border-border rounded-xl p-6 space-y-4">
+        {pageKey === "branding" && (
+          <LogoUploader
+            currentLogo={(content as { logo_path?: string }).logo_path || ""}
+            onLogoChange={(newPath) => {
+              setContent((prev) => ({ ...prev, logo_path: newPath }));
+            }}
+          />
+        )}
         {renderFields(content, [], (path, value) => {
           setContent((prev) => {
             const next = JSON.parse(JSON.stringify(prev));
@@ -61,7 +70,7 @@ export function ContentForm({ pageKey }: ContentFormProps) {
             obj[path[path.length - 1]] = value;
             return next;
           });
-        })}
+        }, pageKey)}
       </div>
 
       <div className="flex items-center gap-3 mt-6">
@@ -82,9 +91,15 @@ export function ContentForm({ pageKey }: ContentFormProps) {
 function renderFields(
   obj: Record<string, unknown>,
   path: string[],
-  onChange: (path: string[], value: unknown) => void
+  onChange: (path: string[], value: unknown) => void,
+  pageKey?: string
 ): React.ReactNode[] {
   return Object.entries(obj).map(([key, value]) => {
+    // Skip logo_path for branding page - it's handled by LogoUploader
+    if (pageKey === "branding" && key === "logo_path") {
+      return null;
+    }
+
     const currentPath = [...path, key];
     const label = key.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
 

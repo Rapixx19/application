@@ -4,6 +4,11 @@ import Link from "next/link";
 import { StatusBadge } from "./status-badge";
 import { StarRating } from "./star-rating";
 
+interface AIEvaluation {
+  role_match_score: number;
+  recommendation: "strong_yes" | "yes" | "maybe" | "no";
+}
+
 interface Application {
   id: string;
   full_name: string;
@@ -13,6 +18,25 @@ interface Application {
   admin_rating: number | null;
   created_at: string;
   status: string;
+  ai_evaluation: AIEvaluation | null;
+}
+
+function AIScoreBadge({ evaluation }: { evaluation: AIEvaluation | null }) {
+  if (!evaluation) {
+    return <span className="text-xs text-muted">—</span>;
+  }
+
+  const score = evaluation.role_match_score;
+  let color = "bg-red-100 text-red-700";
+  if (score >= 80) color = "bg-emerald-100 text-emerald-700";
+  else if (score >= 60) color = "bg-green-100 text-green-700";
+  else if (score >= 40) color = "bg-amber-100 text-amber-700";
+
+  return (
+    <span className={`px-2 py-0.5 rounded text-xs font-medium ${color}`}>
+      {score}
+    </span>
+  );
 }
 
 export function ApplicationsTable({ applications }: { applications: Application[] }) {
@@ -27,6 +51,7 @@ export function ApplicationsTable({ applications }: { applications: Application[
             <th className="text-left px-4 py-3">Name</th>
             <th className="text-left px-4 py-3 hidden md:table-cell">Role(s)</th>
             <th className="text-left px-4 py-3 hidden sm:table-cell">Country</th>
+            <th className="text-left px-4 py-3 hidden lg:table-cell">AI Score</th>
             <th className="text-left px-4 py-3 hidden lg:table-cell">Rating</th>
             <th className="text-left px-4 py-3 hidden sm:table-cell">Applied</th>
             <th className="text-left px-4 py-3">Status</th>
@@ -45,6 +70,9 @@ export function ApplicationsTable({ applications }: { applications: Application[
               </td>
               <td className="px-4 py-3 hidden sm:table-cell text-xs text-muted">
                 {app.country || "\u2014"}
+              </td>
+              <td className="px-4 py-3 hidden lg:table-cell">
+                <AIScoreBadge evaluation={app.ai_evaluation} />
               </td>
               <td className="px-4 py-3 hidden lg:table-cell">
                 <StarRating value={app.admin_rating || 0} />
@@ -67,7 +95,7 @@ export function ApplicationsTable({ applications }: { applications: Application[
           ))}
           {applications.length === 0 && (
             <tr>
-              <td colSpan={7} className="px-4 py-12 text-center text-muted text-sm">
+              <td colSpan={8} className="px-4 py-12 text-center text-muted text-sm">
                 No applications yet.
               </td>
             </tr>

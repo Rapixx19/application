@@ -8,6 +8,8 @@ import { MotivationQuote } from "@/components/admin/motivation-quote";
 import { RatingSection } from "@/components/admin/rating-section";
 import { ActionBar } from "@/components/admin/action-bar";
 import { FileActivityTable } from "@/components/admin/file-activity-table";
+import { AIEvaluationCard } from "@/components/admin/ai-evaluation-card";
+import type { AIEvaluation } from "@/lib/ai/types";
 
 interface Props {
   params: Promise<{ id: string }>;
@@ -61,6 +63,10 @@ export default async function ApplicantDetailPage({ params }: Props) {
       </div>
 
       <ProgressTracker status={app.status} />
+      <AIEvaluationCard
+        applicationId={app.id}
+        evaluation={app.ai_evaluation as AIEvaluation | null}
+      />
       <DetailCards fields={fields} />
       <MotivationQuote text={app.motivation || ""} />
       <RatingSection
