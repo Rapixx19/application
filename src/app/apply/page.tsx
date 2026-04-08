@@ -4,13 +4,14 @@ import { SteppedForm } from "@/components/apply/stepped-form";
 
 export default async function ApplyPage() {
   const content = await getContent("apply");
+  const landing = await getContent("landing");
   const branding = await getContent("branding");
 
   return (
     <div className="min-h-screen bg-background">
       <Nav logoPath={branding.logo_path} />
       <main className="w-full max-w-[520px] mx-auto px-6 pb-16">
-        <SteppedForm content={content} />
+        <SteppedForm content={content} landing={landing} />
       </main>
     </div>
   );

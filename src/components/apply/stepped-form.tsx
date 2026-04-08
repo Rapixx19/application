@@ -2,9 +2,10 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
-import type { ApplyContent } from "@/lib/content/types";
+import type { ApplyContent, LandingContent } from "@/lib/content/types";
 import { trackEvent } from "@/lib/analytics";
 import { ProgressBar } from "./progress-bar";
+import { StepIntro } from "./step-intro";
 import { StepBasics } from "./step-basics";
 import { StepLocation } from "./step-location";
 import { StepBackground } from "./step-background";
@@ -14,9 +15,9 @@ const KEY = "sentavita_apply";
 type FD = { full_name: string; email: string; country: string; institution: string; background: string; roles: string[]; role_details: Record<string, Record<string, string>>; portfolio_url: string; motivation: string };
 const empty: FD = { full_name: "", email: "", country: "", institution: "", background: "", roles: [], role_details: {}, portfolio_url: "", motivation: "" };
 
-export function SteppedForm({ content }: { content: ApplyContent }) {
+export function SteppedForm({ content, landing }: { content: ApplyContent; landing: LandingContent }) {
   const router = useRouter();
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(0);
   const [data, setData] = useState<FD>(empty);
   const [cvFile, setCvFile] = useState<File | null>(null);
   const [submitting, setSubmitting] = useState(false);
@@ -90,9 +91,26 @@ export function SteppedForm({ content }: { content: ApplyContent }) {
     }
   };
 
-  const stepInfo = content.steps[step - 1];
+  // Step 0 is intro, steps 1-4 are form steps
+  const isIntro = step === 0;
+  const stepInfo = !isIntro ? content.steps[step - 1] : null;
   const isLast = step === 4;
 
+  // Show intro page
+  if (isIntro) {
+    return (
+      <div className="pt-8">
+        <StepIntro
+          headline={content.headline}
+          subheadline={content.subheadline}
+          landing={landing}
+          onBegin={() => setStep(1)}
+        />
+      </div>
+    );
+  }
+
+  // Show form steps
   return (
     <div>
       <ProgressBar currentStep={step} totalSteps={4} />
@@ -101,9 +119,9 @@ export function SteppedForm({ content }: { content: ApplyContent }) {
         Step {step} of 4
       </div>
       <h2 className="font-serif text-2xl sm:text-3xl font-semibold text-primary mb-1">
-        {stepInfo.title}
+        {stepInfo?.title}
       </h2>
-      <p className="text-sm text-muted mb-8">{stepInfo.description}</p>
+      <p className="text-sm text-muted mb-8">{stepInfo?.description}</p>
 
       <div key={step} className="animate-[slideIn_0.4s_ease]">
         {step === 1 && <StepBasics data={data} onChange={set} />}
