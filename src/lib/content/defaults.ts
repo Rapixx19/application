@@ -135,6 +135,6 @@ export const defaults: ContentMap = {
   branding: {
     primary_color: "#1a1a2e",
     accent_color: "#2d8a5e",
-    logo_path: "",
+    logo_path: "/logo.png",
   },
 };
