@@ -1,4 +1,5 @@
 export interface SplashContent {
+  enabled: boolean;
   wordmark: string;
   tagline: string;
   duration: number;
@@ -11,6 +12,7 @@ export interface HeroContent {
   eyebrow: string;
   headline: string;
   body: string;
+  bullets?: string[];
   cta_text: string;
   cta_link: string;
 }
@@ -40,9 +42,11 @@ export interface CalloutContent {
 export interface SectionHeadings {
   who_we_are: string;
   who_we_are_body: string;
+  who_we_are_bullets?: string[];
   who_we_are_body_2: string;
   what_we_build: string;
   what_we_build_body: string;
+  what_we_build_bullets?: string[];
   who_we_seek: string;
   who_we_seek_body: string;
   what_we_offer: string;

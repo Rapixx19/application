@@ -3,6 +3,7 @@ import { NDA_TEXT } from "./nda-text";
 
 export const defaults: ContentMap = {
   splash: {
+    enabled: false,
     wordmark: "Sentavita",
     tagline: "Equine Health Technology",
     duration: 5000,
@@ -12,22 +13,38 @@ export const defaults: ContentMap = {
   },
   landing: {
     hero: {
-      eyebrow: "Open Application \u00b7 Limited Cohort",
+      eyebrow: "Open Application · Limited Cohort",
       headline: "Built by riders.\nEngineered for horses.",
-      body: "Sentavita is an early-stage hardware and technology company building a continuous health monitoring platform for horses. Founded by a team with decades of experience at the highest levels of international equestrian sport, we are developing the first wearable device of its kind \u2014 designed for everyday use, across every discipline, at every level of the sport. We are not ready to share the full details publicly, but we are ready to bring the right people in. We are looking for driven, experienced individuals across engineering, design, and technology to join a small, focused team at an early stage.",
-      cta_text: "Apply to collaborate \u2192",
+      body: "We're building the first continuous health monitoring platform for horses.",
+      bullets: [
+        "Early-stage hardware & technology company",
+        "Founded by Olympic-level equestrian professionals",
+        "Wearable device designed for everyday use, every discipline",
+        "Looking for engineers, designers, and technologists to join early",
+      ],
+      cta_text: "Apply to collaborate →",
       cta_link: "/apply",
     },
     sections: {
       who_we_are: "Who we are",
-      who_we_are_body: "Our founding team has competed and operated at the pinnacle of international equestrian sport \u2014 from the stables and training grounds to the Olympic arena. We have managed, trained, and partnered with horses that have stood on podiums at the world\u2019s most prestigious competitions, working alongside elite athletes and veterinary professionals with the highest standards in the sport.",
-      who_we_are_body_2: "That experience taught us one thing: the horse cannot speak. Every decision depends on human intuition and reactive care. We believe that is no longer good enough.",
-      what_we_build: "What we\u2019re building",
-      what_we_build_body: "Sentavita is developing a wearable health technology platform for horses \u2014 tackling equine health from a perspective the industry has not seen before. We are not ready to share full details publicly, but we are ready to bring the right people in.",
-      who_we_seek: "Who we are looking for",
-      who_we_seek_body: "Exceptional individuals with real, hands-on experience. Not limited to students \u2014 if you have the skills and the drive, we want to hear from you.",
+      who_we_are_body: "Our founding team has competed at the pinnacle of international equestrian sport.",
+      who_we_are_bullets: [
+        "Olympic arena experience — stables to podiums",
+        "Partnered with world-class horses and athletes",
+        "Deep veterinary and training expertise",
+      ],
+      who_we_are_body_2: "The horse cannot speak. Every decision depends on intuition and reactive care. We believe that's no longer good enough.",
+      what_we_build: "What we're building",
+      what_we_build_body: "A wearable health platform for horses — a new approach the industry hasn't seen.",
+      what_we_build_bullets: [
+        "Continuous health monitoring",
+        "Designed for real-world stable use",
+        "Full details shared after NDA",
+      ],
+      who_we_seek: "Who we're looking for",
+      who_we_seek_body: "Exceptional individuals with hands-on experience. Students, professionals, freelancers — if you have the skills and drive, we want to hear from you.",
       what_we_offer: "What we offer",
-      what_we_offer_body: "This is an opportunity to position yourself as an early contributor to a groundbreaking product that does not yet exist in the market \u2014 one with the potential to fundamentally change how equine health is managed across the sport.",
+      what_we_offer_body: "An early seat at a groundbreaking product that doesn't exist yet — one that could change how equine health is managed across the sport.",
       commitment: "The commitment",
     },
     stats: [

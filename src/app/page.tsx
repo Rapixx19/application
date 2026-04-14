@@ -17,15 +17,17 @@ export default async function Home() {
 
   return (
     <>
-      <SplashOverlay
-        wordmark={splash.wordmark}
-        tagline={splash.tagline}
-        duration={splash.duration}
-        logoPath={branding.logo_path}
-        videoUrl={splash.video_url}
-        musicUrl={splash.music_url}
-        musicVolume={splash.music_volume}
-      />
+      {splash.enabled && (
+        <SplashOverlay
+          wordmark={splash.wordmark}
+          tagline={splash.tagline}
+          duration={splash.duration}
+          logoPath={branding.logo_path}
+          videoUrl={splash.video_url}
+          musicUrl={splash.music_url}
+          musicVolume={splash.music_volume}
+        />
+      )}
 
       <div className="flex flex-col min-h-screen bg-background">
         <Nav logoPath={branding.logo_path} />
@@ -36,6 +38,7 @@ export default async function Home() {
           <Section
             title={sections.who_we_are}
             body={sections.who_we_are_body}
+            bullets={sections.who_we_are_bullets}
             body2={sections.who_we_are_body_2}
           >
             <StatsGrid stats={landing.stats} />
@@ -44,6 +47,7 @@ export default async function Home() {
           <Section
             title={sections.what_we_build}
             body={sections.what_we_build_body}
+            bullets={sections.what_we_build_bullets}
           >
             <CalloutBlock callout={landing.callout} />
           </Section>

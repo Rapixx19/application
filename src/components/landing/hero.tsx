@@ -12,9 +12,22 @@ export function Hero({ hero }: { hero: HeroContent }) {
         {hero.headline}
       </h1>
 
-      <p className="text-[#4a4a4a] text-base leading-7 mt-6">
-        {hero.body}
-      </p>
+      {hero.body && (
+        <p className="text-[#4a4a4a] text-base leading-7 mt-6">
+          {hero.body}
+        </p>
+      )}
+
+      {hero.bullets && hero.bullets.length > 0 && (
+        <ul className="mt-6 space-y-2">
+          {hero.bullets.map((item, i) => (
+            <li key={i} className="flex gap-3 text-base leading-7 text-[#4a4a4a]">
+              <span className="text-green mt-0.5">•</span>
+              <span>{item}</span>
+            </li>
+          ))}
+        </ul>
+      )}
 
       <Link
         href={hero.cta_link}
