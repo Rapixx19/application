@@ -6,12 +6,19 @@ export async function GET() {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { data } = await supabase
+  // Get files with folder info
+  const { data: files } = await supabase
     .from("project_files")
+    .select("*, folder:file_folders(id, name)")
+    .order("created_at", { ascending: true });
+
+  // Get all folders
+  const { data: folders } = await supabase
+    .from("file_folders")
     .select("*")
     .order("created_at", { ascending: true });
 
-  return NextResponse.json(data || []);
+  return NextResponse.json({ files: files || [], folders: folders || [] });
 }
 
 export async function POST(request: Request) {

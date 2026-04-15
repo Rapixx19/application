@@ -1,7 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
 import { NextResponse } from "next/server";
-import { sendEmail } from "@/lib/email/send";
-import { FilesReleasedEmail } from "@/lib/email/templates/files-released";
 
 export async function POST(request: Request) {
   try {
@@ -39,16 +37,20 @@ export async function POST(request: Request) {
     // Generate welcome token if not exists
     const welcomeToken = app.welcome_token || crypto.randomUUID();
 
-    // Update application: sign NDA + release files
+    // Schedule file release for 10 minutes from now
+    const releaseAt = new Date();
+    releaseAt.setMinutes(releaseAt.getMinutes() + 10);
+
+    // Update application: sign NDA + schedule release (NOT immediate release)
     const { error: updateErr } = await supabase
       .from("applications")
       .update({
         status: "nda_signed",
         nda_signed_at: new Date().toISOString(),
         nda_signed_name: signed_name.trim(),
-        files_released: true,
-        files_released_at: new Date().toISOString(),
         welcome_token: welcomeToken,
+        release_scheduled_at: releaseAt.toISOString(),
+        // files_released stays false until cron releases them
       })
       .eq("id", app.id);
 
@@ -57,23 +59,11 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Failed to record signature." }, { status: 500 });
     }
 
-    // Send welcome email
-    const { data: applicant } = await supabase
-      .from("applications")
-      .select("full_name, email")
-      .eq("id", app.id)
-      .single();
-
-    if (applicant) {
-      const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
-      sendEmail({
-        to: applicant.email,
-        subject: "Welcome to Sentavita \u2014 your project files are ready",
-        react: FilesReleasedEmail({ name: applicant.full_name, welcomeUrl: `${appUrl}/welcome/${welcomeToken}` }),
-      }).catch(() => {});
-    }
-
-    return NextResponse.json({ success: true, welcome_token: welcomeToken });
+    return NextResponse.json({
+      success: true,
+      welcome_token: welcomeToken,
+      release_scheduled_at: releaseAt.toISOString(),
+    });
   } catch {
     return NextResponse.json({ error: "Invalid request." }, { status: 400 });
   }

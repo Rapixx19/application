@@ -74,7 +74,13 @@ export default async function ApplicantDetailPage({ params }: Props) {
         initialRating={app.admin_rating || 0}
         initialNotes={app.admin_notes || ""}
       />
-      <ActionBar applicationId={app.id} status={app.status} />
+      <ActionBar
+        applicationId={app.id}
+        status={app.status}
+        applicantName={app.full_name}
+        releaseScheduledAt={app.release_scheduled_at}
+        filesReleased={app.files_released}
+      />
 
       {app.status === "files_released" && (
         <FileActivityTable activities={activities || []} />

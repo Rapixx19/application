@@ -10,20 +10,8 @@ export async function DELETE(_req: Request, { params }: Props) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  // Get file to find storage path
-  const { data: file } = await supabase
-    .from("project_files")
-    .select("storage_path")
-    .eq("id", id)
-    .single();
-
-  if (!file) return NextResponse.json({ error: "Not found" }, { status: 404 });
-
-  // Delete from storage
-  await supabase.storage.from("project-files").remove([file.storage_path]);
-
-  // Delete from DB
-  const { error } = await supabase.from("project_files").delete().eq("id", id);
+  // Files in this folder will have folder_id set to NULL (ON DELETE SET NULL)
+  const { error } = await supabase.from("file_folders").delete().eq("id", id);
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
   return NextResponse.json({ success: true });
@@ -36,26 +24,14 @@ export async function PATCH(request: Request, { params }: Props) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const body = await request.json();
-  const updates: Record<string, unknown> = {};
-
-  // Allow updating folder_id (can be null to remove from folder)
-  if ("folder_id" in body) {
-    updates.folder_id = body.folder_id;
-  }
-
-  // Allow updating is_default
-  if ("is_default" in body) {
-    updates.is_default = body.is_default;
-  }
-
-  if (Object.keys(updates).length === 0) {
-    return NextResponse.json({ error: "No valid fields to update" }, { status: 400 });
+  const { name } = await request.json();
+  if (!name?.trim()) {
+    return NextResponse.json({ error: "Folder name is required" }, { status: 400 });
   }
 
   const { error } = await supabase
-    .from("project_files")
-    .update(updates)
+    .from("file_folders")
+    .update({ name: name.trim() })
     .eq("id", id);
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
